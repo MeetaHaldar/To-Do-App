@@ -53,7 +53,7 @@ app.get("/", function (req, res) {
   </head>
   <body>
   <div class="container">
-  <h1 class="display-4 text-center py-1">To-Do App</h1>
+  <h1 class="display-6 text-center py-1">To-Do App</h1>
   
   <div class="jumbotron p-3 shadow-sm">
   <form  id="create-form" action="/create-item" method="POST">
@@ -88,10 +88,14 @@ app.post("/create-item", function (req, res) {
     allowedTags: [],
     allowedAttributes: {},
   });
-  db.collection("products").insertOne({ text: safeText }, function (err, info) {
-    data = { text: safeText, _id: info.insertedId };
-    res.json(data);
-  });
+  let date = sanitizeHTML(req.body.date);
+  db.collection("products").insertOne(
+    { text: safeText, date: date },
+    function (err, info) {
+      data = { text: safeText, date: date, _id: info.insertedId };
+      res.json(data);
+    }
+  );
 });
 
 app.post("/update-item", function (req, res) {
