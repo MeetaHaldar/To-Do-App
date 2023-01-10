@@ -84,18 +84,20 @@ let items =${JSON.stringify(products)}
 });
 
 app.post("/create-item", function (req, res) {
-  let safeText = sanitizeHTML(req.body.text, {
-    allowedTags: [],
-    allowedAttributes: {},
-  });
-  let date = sanitizeHTML(req.body.date);
-  db.collection("products").insertOne(
-    { text: safeText, date: date },
-    function (err, info) {
-      data = { text: safeText, date: date, _id: info.insertedId };
-      res.json(data);
-    }
-  );
+  if (req.body.text) {
+    let safeText = sanitizeHTML(req.body.text, {
+      allowedTags: [],
+      allowedAttributes: {},
+    });
+    let date = sanitizeHTML(req.body.date);
+    db.collection("products").insertOne(
+      { text: safeText, date: date },
+      function (err, info) {
+        data = { text: safeText, date: date, _id: info.insertedId };
+        res.json(data);
+      }
+    );
+  }
 });
 
 app.post("/update-item", function (req, res) {

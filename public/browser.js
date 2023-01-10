@@ -14,7 +14,7 @@ let createField = document.getElementById("create-field");
 function itemTemplate(item) {
   return `<li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
   <div>
-  <blockquote class="blockquote">${item.text}</blockquote>
+  <blockquote class="blockquote item-text">${item.text}</blockquote>
   <figcaption class="blockquote-footer"> Added At :- ${item.date}</figcaption></div>
  
   <div>
@@ -36,9 +36,9 @@ document.getElementById("item-list").insertAdjacentHTML("beforeend", ourHTML);
 // create feature
 document.getElementById("create-form").addEventListener("submit", function (e) {
   e.preventDefault();
-    var d = new Date();
-    var date = [ d.getDate() ,d.getMonth(),d.getFullYear()].join('/');
-     axios
+  var d = new Date();
+  var date = [d.getDate(), d.getMonth() + 1, d.getFullYear()].join("/");
+  axios
     .post("/create-item", {
       text: createField.value,
       date: date,
@@ -70,8 +70,10 @@ document.addEventListener("click", function (e) {
         });
     }
   }
+});
 
-  // update feature
+// update feature
+document.addEventListener("click", function (e) {
   if (e.target.classList.contains("edit-me")) {
     let userInput = prompt(
       "enter your new task here",
