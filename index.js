@@ -122,3 +122,5 @@ app.post("/delete-item", function (req, res) {
     }
   );
 });
+
+module.exports = app;
