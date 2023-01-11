@@ -98,7 +98,7 @@ let items =${JSON.stringify(products)}
 
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-  <script src="https://raw.githubusercontent.com/MeetaHaldar/To-Do-App/main/public/browser.js"></script>
+  <script src ="/browser.js"></script>
   </body>
   </html>`
       );

@@ -4,12 +4,19 @@
     {
       "src": "index.js",
       "use": "@now/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@now/static"
     }
   ],
   "routes": [
     {
+      "src": "/browser.js",
+      "dest": "public/browser.js"
+    },
+    {
       "src": "/(.*)",
-
       "dest": "index.js"
     }
   ]
