@@ -5,40 +5,62 @@ const mongodb = require("mongodb").MongoClient;
 let ObjectId = require("mongodb").ObjectId;
 let app = express();
 let db;
+let connectionString = process.env.STRING;
+
+const connectDb = async () => {
+  return new Promise((resolve, reject) => {
+    mongodb.connect(
+      connectionString,
+      { useNewUrlParser: true, useUnifiedTopology: true },
+      function (err, client) {
+        if (err) reject(err);
+        else {
+          db = client.db("mytodoapp");
+          resolve(db);
+        }
+      }
+    );
+  });
+};
 
 app.use(express.static("public"));
-let connectionString = process.env.STRING;
-mongodb.connect(
-  connectionString,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  function (err, client) {
-    if (err) throw err;
-    else {
-      db = client.db("mytodoapp");
-      const port = process.env.PORT || 4000;
-      app.listen(port, (req, res) => {
-        console.log(`app is running on port ${port}`);
-      });
-    }
-  }
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-function passwordProtected(req, res, next) {
-  res.set("WWW-Authenticate", 'Basic realm="Simple todo app"');
-  console.log(req.headers.authorization);
-  if (req.headers.authorization == "Basic bWVldGE6aGFsZGFy") {
-    //meeta haldar
-    next();
-  } else {
-    res.status(401).send("authentication required");
-  }
-}
+// function passwordProtected(req, res, next) {
+//   res.set("WWW-Authenticate", 'Basic realm="Simple todo app"');
+//   console.log(req.headers.authorization);
+//   if (req.headers.authorization == "Basic bWVldGE6aGFsZGFy") {
+//     //meeta haldar
+//     next();
+//   } else {
+//     res.status(401).send("authentication required");
+//   }
+// }
 
 // app.use(passwordProtected);
 
-app.get("/", function (req, res) {
+// JSDoc
+/** @returns {(req: express.Request, res: express.Response, next: express.NextFunction) => Promise<void>} */
+const dbChecker = () => async (req, res, next) => {
+  if (!db) {
+    try {
+      await connectDb();
+      next();
+    } catch (e) {
+      res.status(500).send({
+        code: 500,
+        message: "DB Error",
+      });
+    }
+  } else {
+    next();
+  }
+};
+
+app.use(dbChecker());
+
+app.get("/", async (req, res) => {
   db.collection("products")
     .find()
     .toArray(function (err, products) {
