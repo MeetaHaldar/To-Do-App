@@ -23,7 +23,7 @@ const connectDb = async () => {
   });
 };
 
-app.use(express.static("public"));
+app.use(express.static("public")); // Not Working in Vercel
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
